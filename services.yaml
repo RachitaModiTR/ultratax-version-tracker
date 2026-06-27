@@ -71,17 +71,6 @@ services:
       staging: https://stage.api.ultratax.com/efile/connect/statusCheck
       prod: https://api.ultratax.com/efile/connect/statusCheck
 
-  # Internal API. Separate domain: api.int.ultratax.com
-  # Confirmed live: dev 20260626.2 (main). Staging/prod may require internal network.
-  - name: Internal UT API Services
-    version_path: entries.self.data.build
-    branch_path: entries.self.data.branch
-    timeout: 8
-    endpoints:
-      dev: https://dev.api.int.ultratax.com/internal-ut-api/status-check
-      qa: https://qa.api.int.ultratax.com/internal-ut-api/status-check
-      staging: https://stage.api.int.ultratax.com/internal-ut-api/status-check
-      prod: https://api.int.ultratax.com/internal-ut-api/status-check
 
   # Angular 19 SPA — version from CI/CD build manifest (ciparams.json)
   # Response: { "version": "20260626.3", "service": "ultratax-efile-dashboard" }
