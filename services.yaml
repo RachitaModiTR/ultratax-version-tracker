@@ -83,16 +83,16 @@ services:
       staging: https://stage.api.int.ultratax.com/internal-ut-api/status-check
       prod: https://api.int.ultratax.com/internal-ut-api/status-check
 
-  # Angular 19 SPA — no health endpoint. Checking HTTP availability only.
-  # Source: environment.constant.ts
+  # Angular 19 SPA — version from CI/CD build manifest (ciparams.json)
+  # Response: { "version": "20260626.3", "service": "ultratax-efile-dashboard" }
   - name: UltraTax Web App
-    availability_only: true
+    version_path: version
     timeout: 10
     endpoints:
-      dev: https://dev.ultratax.com
-      qa: https://qa.ultratax.com
-      staging: https://stage.ultratax.com
-      prod: https://www.ultratax.com
+      dev: https://dev.ultratax.com/cicd/cumulus/ciparams.json
+      qa: https://qa.ultratax.com/cicd/cumulus/ciparams.json
+      staging: https://stage.ultratax.com/cicd/cumulus/ciparams.json
+      prod: https://www.ultratax.com/cicd/cumulus/ciparams.json
 
   # Legacy .NET Framework — no modern health endpoint available.
   - name: UTPlatform (Legacy)
