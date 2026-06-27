@@ -1,0 +1,112 @@
+# Version Tracker Configuration
+# All endpoints verified live from dev.api.ultratax.com.
+#
+# Health check response format: ASP.NET HealthChecks.UI (UIResponseWriter)
+#   { "entries": { "self": { "data": { "build": "...", "branch": "..." } } } }
+#
+# Base URL pattern:
+#   dev     -> https://dev.api.ultratax.com
+#   qa      -> https://qa.api.ultratax.com
+#   staging -> https://stage.api.ultratax.com
+#   prod    -> https://api.ultratax.com
+#
+#   internal dev     -> https://dev.api.int.ultratax.com
+#   internal qa      -> https://qa.api.int.ultratax.com
+#   internal staging -> https://stage.api.int.ultratax.com
+#   internal prod    -> https://api.int.ultratax.com
+
+environments:
+  - dev
+  - qa
+  - staging
+  - prod
+
+services:
+
+  # Gateway / main API orchestrator. Endpoint: /statusCheck (root, no prefix)
+  # Confirmed live: dev 20260626.2 (main)
+  - name: UltraTax API Services
+    version_path: entries.self.data.build
+    branch_path: entries.self.data.branch
+    timeout: 8
+    endpoints:
+      dev: https://dev.api.ultratax.com/statusCheck
+      qa: https://qa.api.ultratax.com/statusCheck
+      staging: https://stage.api.ultratax.com/statusCheck
+      prod: https://api.ultratax.com/statusCheck
+
+  # Prefix: /utclients (from HealthCheckSettings.PrefixUrl in appsettings.json)
+  # Confirmed live: dev 20260624.1 (main), prod 20260522.1 (release/20) — MISMATCH
+  - name: UltraTax Client Services
+    version_path: entries.self.data.build
+    branch_path: entries.self.data.branch
+    timeout: 8
+    endpoints:
+      dev: https://dev.api.ultratax.com/utclients/statusCheck
+      qa: https://qa.api.ultratax.com/utclients/statusCheck
+      staging: https://stage.api.ultratax.com/utclients/statusCheck
+      prod: https://api.ultratax.com/utclients/statusCheck
+
+  # Prefix: /taxassistant
+  # Confirmed live: dev 20260624.1 (main), prod 20260504.2 (main) — MISMATCH
+  - name: Tax Assistant Services
+    version_path: entries.self.data.build
+    branch_path: entries.self.data.branch
+    timeout: 8
+    endpoints:
+      dev: https://dev.api.ultratax.com/taxassistant/statusCheck
+      qa: https://qa.api.ultratax.com/taxassistant/statusCheck
+      staging: https://stage.api.ultratax.com/taxassistant/statusCheck
+      prod: https://api.ultratax.com/taxassistant/statusCheck
+
+  # Prefix: /efile/connect — uses "environment" field instead of "branch"
+  # Confirmed live: dev 20260615.1
+  - name: eFile Connect
+    version_path: entries.self.data.build
+    branch_path: entries.self.data.environment
+    timeout: 8
+    endpoints:
+      dev: https://dev.api.ultratax.com/efile/connect/statusCheck
+      qa: https://qa.api.ultratax.com/efile/connect/statusCheck
+      staging: https://stage.api.ultratax.com/efile/connect/statusCheck
+      prod: https://api.ultratax.com/efile/connect/statusCheck
+
+  # Internal API. Separate domain: api.int.ultratax.com
+  # Confirmed live: dev 20260626.2 (main). Staging/prod may require internal network.
+  - name: Internal UT API Services
+    version_path: entries.self.data.build
+    branch_path: entries.self.data.branch
+    timeout: 8
+    endpoints:
+      dev: https://dev.api.int.ultratax.com/internal-ut-api/status-check
+      qa: https://qa.api.int.ultratax.com/internal-ut-api/status-check
+      staging: https://stage.api.int.ultratax.com/internal-ut-api/status-check
+      prod: https://api.int.ultratax.com/internal-ut-api/status-check
+
+  # Angular 19 SPA — no health endpoint. Checking HTTP availability only.
+  # Source: environment.constant.ts
+  - name: UltraTax Web App
+    availability_only: true
+    timeout: 10
+    endpoints:
+      dev: https://dev.ultratax.com
+      qa: https://qa.ultratax.com
+      staging: https://stage.ultratax.com
+      prod: https://www.ultratax.com
+
+  # Legacy .NET Framework — no modern health endpoint available.
+  - name: UTPlatform (Legacy)
+    availability_only: true
+    timeout: 10
+    endpoints:
+      dev: ""
+      qa: ""
+      staging: ""
+      prod: ""
+
+# Optional: global Bearer token applied to all requests
+# global_auth_token: "your-bearer-token-here"
+
+# Optional: per-environment auth tokens
+# env_auth_tokens:
+#   prod: "prod-bearer-token"

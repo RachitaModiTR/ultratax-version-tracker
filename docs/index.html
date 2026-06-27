@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Version Tracker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; padding: 2rem; }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.25rem; }
+  h1 { font-size: 1.5rem; color: #f8fafc; }
+  .countdown { font-size: 0.8rem; color: #475569; }
+  .meta { color: #64748b; font-size: 0.85rem; margin-bottom: 1rem; }
+  .banner { padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem; }
+  .banner.ok { background: #14532d; color: #4ade80; }
+  .banner.warn { background: #451a03; color: #fbbf24; }
+  .legend { display: flex; gap: 1.5rem; margin-bottom: 1.2rem; font-size: 0.8rem; color: #94a3b8; flex-wrap: wrap; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+  thead tr { background: #1e293b; }
+  th { padding: 0.9rem 1.2rem; text-align: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; color: #fff; }
+  th:first-child { text-align: left; background: #1e293b; }
+  td { padding: 0.75rem 1.2rem; text-align: center; font-size: 0.85rem; border-top: 1px solid #334155; }
+  td.svc-name { text-align: left; font-weight: 600; color: #cbd5e1; white-space: nowrap; }
+  td.ok { color: #4ade80; font-family: monospace; }
+  td.mismatch { color: #fbbf24; font-family: monospace; font-weight: 700; }
+  td.error { color: #f87171; font-size: 0.75rem; }
+  td.na { color: #475569; }
+  .branch { font-size: 0.7rem; color: #64748b; margin-top: 2px; font-family: monospace; }
+  tr:hover td { background: #263248; }
+  footer { margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center; }
+  .refresh-btn { padding: 0.5rem 1.2rem; background: #3b82f6; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .refresh-btn:hover { background: #2563eb; }
+  .footer-note { font-size: 0.75rem; color: #475569; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Service Version Tracker</h1>
+  <span class="countdown">Next refresh in <span id="timer">5:00</span></span>
+</header>
+<div class="meta">Last updated: 2026-06-27 13:24:11 UTC &nbsp;|&nbsp; 7 services &nbsp;|&nbsp; 4 environments</div>
+<div class="banner warn">⚠ 5 services with version mismatch across environments</div>
+<div class="legend">
+  <span><span class="dot" style="background:#4ade80"></span> Consistent</span>
+  <span><span class="dot" style="background:#fbbf24"></span> Version mismatch</span>
+  <span><span class="dot" style="background:#f87171"></span> Unreachable / error</span>
+  <span><span class="dot" style="background:#475569"></span> Not configured</span>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th style="background:#6366f1">DEV</th><th style="background:#f59e0b">QA</th><th style="background:#10b981">STAGING</th><th style="background:#ef4444">PROD</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class='svc-name'>UltraTax API Services</td><td class="mismatch" title="">20260626.2<div class="branch">main</div></td><td class="mismatch" title="">20260624.6<div class="branch">main</div></td><td class="mismatch" title="">20260624.6<div class="branch">main</div></td><td class="mismatch" title="">20260430.2<div class="branch">main</div></td></tr>
+<tr><td class='svc-name'>UltraTax Client Services</td><td class="mismatch" title="">20260624.1<div class="branch">main</div></td><td class="mismatch" title="">20260622.1<div class="branch">main</div></td><td class="mismatch" title="">20260622.1<div class="branch">main</div></td><td class="mismatch" title="">20260522.1<div class="branch">release/20260531.1</div></td></tr>
+<tr><td class='svc-name'>Tax Assistant Services</td><td class="mismatch" title="">20260624.1<div class="branch">main</div></td><td class="mismatch" title="">20260624.1<div class="branch">main</div></td><td class="mismatch" title="">20260624.1<div class="branch">main</div></td><td class="mismatch" title="">20260504.2<div class="branch">main</div></td></tr>
+<tr><td class='svc-name'>eFile Connect</td><td class="mismatch" title="">20260615.1<div class="branch">dev</div></td><td class="mismatch" title="">20260615.1<div class="branch">qa</div></td><td class="mismatch" title="">20260615.1<div class="branch">stage</div></td><td class="mismatch" title="">20260421.1<div class="branch">prod</div></td></tr>
+<tr><td class='svc-name'>Internal UT API Services</td><td class="mismatch" title="">20260626.2<div class="branch">main</div></td><td class="mismatch" title="">20260624.6<div class="branch">main</div></td><td class="error" title="Connection refused">✗ unreachable</td><td class="error" title="Connection refused">✗ unreachable</td></tr>
+<tr><td class='svc-name'>UltraTax Web App</td><td class="ok" title="">HTTP 200</td><td class="ok" title="">HTTP 200</td><td class="ok" title="">HTTP 200</td><td class="ok" title="">HTTP 200</td></tr>
+<tr><td class='svc-name'>UTPlatform (Legacy)</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="na">—</td></tr>
+
+  </tbody>
+</table>
+<footer>
+  <button class="refresh-btn" onclick="window.location.reload()">↺ Refresh now</button>
+  <span class="footer-note">Auto-refreshes every 5 min &nbsp;·&nbsp; Dashboard updated by GitHub Actions every 10 min</span>
+</footer>
+<script>
+  // Countdown to next page reload (5 minutes)
+  var seconds = 300;
+  var el = document.getElementById('timer');
+  setInterval(function() {
+    seconds--;
+    if (seconds <= 0) { window.location.reload(); return; }
+    var m = Math.floor(seconds / 60), s = seconds % 60;
+    el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  }, 1000);
+</script>
+</body>
+</html>
